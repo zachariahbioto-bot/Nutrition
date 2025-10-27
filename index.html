@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ocular Impact of Nutritional Deficiencies</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load new fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            /* Applied Aurora body font and colors */
+            font-family: 'Poppins', sans-serif;
+            background-color: #FDFBF7;
+            color: #4a4a4a;
+        }
+        /* Applied Aurora heading font */
+        h1, h2, h3, h4, h5, h6, .slide-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+        /* Style for the active nav link, using Aurora palette */
+        .nav-link.active {
+            background-color: #522888; /* Deep Purple */
+            color: white;
+            font-weight: 600;
+            border-left: 3px solid #BF9553; /* Gold */
+            transform: translateX(5px);
+        }
+        .nav-link:hover {
+            color: #BF9553; /* Gold */
+            transform: translateX(5px);
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        /* Card style from Aurora */
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom table styling to match presentation look */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.1rem;
+        }
+        .styled-table thead tr {
+            background-color: #522888;
+            color: #ffffff;
+            text-align: left;
+        }
+        .styled-table th, .styled-table td {
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+        }
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f7f7f7;
+        }
+        .styled-table tbody tr:hover {
+            background-color: #FDFBF7;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex h-screen">
+        <!-- Sidebar (Interactive Navigation) - Styled with Aurora theme -->
+        <nav id="sidebar" class="w-72 bg-white border-r border-gray-200 p-4 overflow-y-auto flex-shrink-0 hidden md:block shadow-lg">
+            <h2 class="text-2xl font-bold text-[#522888] mb-4">Presentation Outline</h2>
+            <ul id="nav-links" class="space-y-1">
+                <!-- Navigation links will be dynamically populated by JavaScript -->
+            </ul>
+        </nav>
+
+        <!-- Main Content Area (Slides + Footer) -->
+        <div class="flex-grow flex flex-col h-screen">
+            
+            <!-- Slide Container -->
+            <main id="slide-container" class="flex-grow p-6 md:p-12 lg:p-16 overflow-y-auto bg-[#FDFBF7]">
+                <!-- Slides will be dynamically populated by JavaScript -->
+            </main>
+            
+            <!-- Navigation Controls (Footer) - Styled with Aurora theme -->
+            <div class="p-4 bg-white flex justify-between items-center z-10 shadow-lg border-t border-gray-200 flex-shrink-0">
+                <button id="prevBtn" onclick="changeSlide(-1)" class="px-6 py-2 bg-[#522888] hover:bg-[#754D9D] text-white font-semibold rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    &larr; Previous
+                </button>
+                <span id="slideIndicator" class="text-lg font-medium text-gray-700"></span>
+                <button id="nextBtn" onclick="changeSlide(1)" class="px-6 py-2 bg-[#522888] hover:bg-[#754D9D] text-white font-semibold rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next &rarr;
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array of slide objects containing title and content (HTML)
+        // Content has been updated from the 'Nutritional Deficiencies and Ocular Health.pdf'
+        const slides = [
+            {
+                title: "The Ocular Impact of Nutritional Deficiencies and Toxicities",
+                subtitle: "Analysis of Micronutrient and Macronutrient Effects on Eye Structure and Function | October 26, 2025",
+                content: `
+                    <h2 class="text-3xl font-semibold mb-4 text-[#522888]">Abstract</h2>
+                    <p class="text-xl mb-6 text-[#4a4a4a]">This document analyzes the critical relationship between specific nutritional status and eye health. It explores how deficiencies and toxicities of selected micronutrients (Selenium, Copper, and B-complex vitamins) and deficiencies of macronutrients compromise ocular structure and function, leading to visual impairment and specific ocular diseases.</p>
+                    <p class="text-xl text-[#4a4a4a]">The focus is placed on the mechanisms of <strong class="text-[#BF9553]">oxidative damage</strong>, <strong class="text-[#BF9553]">pigmentation control</strong>, and <strong class="text-[#BF9553]">optic nerve health</strong>.</p>
+                `
+            },
+            {
+                title: "Part I: Micronutrient Focus",
+                subtitle: "Specific Ocular Roles",
+                content: `
+                    <p class="text-2xl mt-4 text-[#4a4a4a]">Micronutrients are essential for specific biochemical pathways that maintain ocular integrity. Deficiencies often lead to distinct, identifiable ocular diseases.</p>
+                    <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 border-b border-[#BF9553] pb-2">Focus Nutrients:</h3>
+                    <ul class="list-disc list-inside text-2xl space-y-2 ml-4">
+                        <li><strong class="text-[#522888]">Selenium (Se)</strong>: Oxidative protection</li>
+                        <li><strong class="text-[#522888]">Copper (Cu)</strong>: Pigmentation and nerve function</li>
+                        <li><strong class="text-[#522888]">B-Complex Vitamins</strong>: Optic nerve health</li>
+                    </ul>
+                `
+            },
+            {
+                title: "1. Selenium (Se)",
+                subtitle: "Oxidative Damage Protection",
+                content: `
+                    <h3 class="text-3xl font-semibold mb-4 text-[#522888]">Mechanism:</h3>
+                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
+                        <li>Selenium is incorporated into the antioxidant enzyme <strong class="text-[#BF9553]">Glutathione Peroxidase (GPx)</strong>.</li>
+                        <li>GPx is highly concentrated in the <strong class="text-[#BF9553]">lens and retina</strong>, which are vulnerable to oxidative stress (light exposure, high metabolism).</li>
+                    </ul>
+                    <div class="mt-8 p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
+                        <h4 class="text-xl font-semibold text-[#522888]">Deficiency Effect & Manifestations:</h4>
+                        <ul class="list-disc list-inside text-lg space-y-2 ml-4 text-[#4a4a4a]">
+                            <li>Reduced GPx activity leads to accumulation of reactive oxygen species.</li>
+                            <li><strong class="text-[#B97F24]">Ocular Manifestations:</strong> Strongly implicated in <strong class="font-semibold">Age-Related Macular Degeneration (AMD)</strong> and the formation/progression of <strong class="font-semibold">cataracts</strong> (lens opacification).</li>
+                            <li><strong class="text-[#B97F24]">Disease Linkage:</strong> Low status is also studied in context of Thyroid Eye Disease.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                title: "2. Copper (Cu)",
+                subtitle: "Ocular Pigmentation and Nerve Function",
+                content: `
+                    <h3 class="text-3xl font-semibold mb-4 text-[#522888]">Essential Ocular Roles:</h3>
+                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
+                        <li><strong class="text-[#BF9553]">Tyrosinase:</strong> Essential for synthesizing <strong class="font-semibold">melanin</strong> (pigmentation in iris and retina).</li>
+                        <li><strong class="text-[#BF9553]">Cytochrome c Oxidase (CCO):</strong> Vital for cellular <strong class="font-semibold">energy production</strong> and structural integrity of myelin in the optic nerve.</li>
+                    </ul>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 border-l-4 border-red-500 bg-white rounded-md card">
+                            <h4 class="text-xl font-semibold text-red-700">Deficiency: Ocular Neuropathy</h4>
+                            <p class="text-lg text-[#4a4a4a]">Impaired CCO leads to demyelination of nerve fibers.</p>
+                            <ul class="list-disc list-inside text-sm mt-2 ml-4">
+                                <li><strong class="text-[#522888]">Presentation:</strong> Painless, progressive bilateral vision loss, often with systemic neurological issues.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 border-l-4 border-amber-500 bg-white rounded-md card">
+                            <h4 class="text-xl font-semibold text-amber-700">Toxicity: Wilson Disease</h4>
+                            <p class="text-lg text-[#4a4a4a]">Genetic disorder causing copper deposits in the cornea.</p>
+                            <ul class="list-disc list-inside text-sm mt-2 ml-4">
+                                <li><strong class="text-[#522888]">Presentation:</strong> <strong class="font-semibold">Kayser-Fleischer Rings</strong>—a greenish-brown or gold ring at the corneal periphery (slit-lamp examination).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "3. B Complex Vitamins",
+                subtitle: "Nutritional Optic Neuropathy (NON)",
+                content: `
+                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Deficiencies in B-complex vitamins are the primary cause of <strong class="text-[#BF9553]">Nutritional Optic Neuropathy (NON)</strong>, a reversible condition if treated promptly.</p>
+
+                    <!-- START BIOLOGICAL DRAWING (SVG) -->
+                    <div class="grid md:grid-cols-2 gap-8 items-center mb-8">
+                        <!-- SVG Drawing of Optic Nerve -->
+                        <div class="p-4 bg-white rounded-lg shadow-inner">
+                             <h4 class="text-xl font-bold text-[#522888] mb-2">Location of Damage (NON)</h4>
+                             <svg width="100%" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="#BF9553" />
+                                    </marker>
+                                </defs>
+                                <style>
+                                    /* Ensure text is visible and fits the theme */
+                                    .svg-label { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; fill: #522888; }
+                                    .svg-highlight { font-family: 'Poppins', sans-serif; font-size: 14px; fill: #BF9553; }
+                                </style>
+                                <!-- Optic Nerve Trunk (Darker color) -->
+                                <path d="M 50 100 C 150 50, 250 150, 350 100" stroke="#4a4a4a" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.2"/>
+                                
+                                <!-- Papillomacular Bundle (Central area of damage) - Highlighted in theme color -->
+                                <path d="M 50 100 C 150 80, 250 120, 350 100" stroke="#BF9553" stroke-width="10" fill="none" stroke-linecap="round"/>
+                                
+                                <!-- Nerve End (Retina Side) -->
+                                <circle cx="50" cy="100" r="15" fill="#522888" opacity="0.8"/>
+
+                                <!-- Labeling -->
+                                <text x="360" y="105" class="svg-label">Optic Nerve</text>
+                                <text x="15" y="65" class="svg-label">Retina</text>
+                                
+                                <!-- Indicator for affected bundle -->
+                                <text x="100" y="180" class="svg-highlight">Papillomacular Bundle (Affected)</text>
+                                <line x1="180" y1="170" x2="250" y2="110" stroke="#BF9553" stroke-width="2" marker-end="url(#arrowhead)"/>
+                            </svg>
+                        </div>
+
+                        <!-- Content for NON Explanation -->
+                        <div class="flex flex-col justify-center">
+                            <h4 class="text-xl font-semibold text-[#522888]">Key Pathophysiology:</h4>
+                            <p class="text-lg text-[#4a4a4a]">NON selectively targets the nerve fibers connecting the macula (central retina) to the optic nerve head. These fibers form the <strong class="font-semibold">papillomacular bundle</strong>, leading to specific central vision loss patterns.</p>
+                        </div>
+                    </div>
+                    <!-- END BIOLOGICAL DRAWING (SVG) -->
+                    
+                    <div class="space-y-6">
+                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
+                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B12 (Cobalamin)</h4>
+                            <p class="text-xl text-[#4a4a4a]">Essential for myelin synthesis and maintenance; deficiency causes demyelination and axonal loss in the papillomacular bundle.</p>
+                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
+                                <li><strong class="text-[#B97F24]">Vision Effect:</strong> Bilateral, progressive central vision loss; difficulty distinguishing <strong class="font-semibold">red and green colors</strong> (dyschromatopsia).</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
+                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B1 (Thiamine)</h4>
+                            <p class="text-xl text-[#4a4a4a]">Required for nerve cell energy metabolism; acute deficiency leads to Wernicke's Encephalopathy.</p>
+                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
+                                <li><strong class="text-[#B97F24]">Ocular Signs:</strong> Nystagmus, <strong class="font-semibold">ophthalmoplegia</strong> (paralysis of eye muscles), and loss of visual acuity.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
+                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B2 (Riboflavin)</h4>
+                            <p class="text-xl text-[#4a4a4a]">Essential coenzyme and antioxidant.</p>
+                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
+                                <li><strong class="text-[#B97F24]">Ocular Signs:</strong> <strong class="font-semibold">Photophobia</strong> (light sensitivity) and <strong class="font-semibold">corneal vascularization</strong> (blood vessel growth into the cornea).</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "Part II: Macronutrient Deficiencies",
+                subtitle: "General Ocular Compromise",
+                content: `
+                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Severe deficiencies in macronutrients (Protein and Fats) contribute to general ocular compromise, often by exacerbating micronutrient issues.</p>
+                    
+                    <h3 class="text-2xl font-bold mt-8 mb-4 text-[#BF9553] border-b border-gray-300 pb-2">Protein-Energy Malnutrition (PEM)</h3>
+                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
+                        <li>PEM severely exacerbates deficiencies in micronutrients like <strong class="text-[#522888]">Vitamin A</strong>.</li>
+                        <li>This leads to severe dry eye disease (<strong class="text-[#B97F24]">xerophthalmia</strong>) and corneal damage.</li>
+                    </ul>
+                    
+                    <h3 class="text-2xl font-bold mt-8 mb-4 text-[#BF9553] border-b border-gray-300 pb-2">Essential Fatty Acids (EFA)</h3>
+                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
+                        <li>The retina is rich in <strong class="text-[#522888]">Docosahexaenoic Acid (DHA)</strong>, an &omega;-3 fatty acid.</li>
+                        <li>EFA deficiency compromises photoreceptor membrane function, leading to <strong class="text-[#B97F24]">impaired visual acuity</strong> (especially in development) and contributing to <strong class="text-[#B97F24]">Dry Eye Syndrome</strong>.</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Table 1: B-Vitamin Clinical Presentations",
+                subtitle: "Ocular and Systemic Signs",
+                content: `
+                    <div class="mt-8 overflow-x-auto card">
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>B-Vitamin</th>
+                                    <th>Ocular Presentation</th>
+                                    <th>Associated Systemic Presentations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-bold text-[#522888]">B12 (Cobalamin)</td>
+                                    <td>Bilateral, painless central vision loss; Red-green dyschromatopsia; Cecocentral scotoma; Optic atrophy (late stage).</td>
+                                    <td>Peripheral neuropathy (paresthesias); Megaloblastic anemia; Ataxia; Cognitive changes.</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold text-[#522888]">B1 (Thiamine)</td>
+                                    <td>Nystagmus; Ophthalmoplegia; Loss of visual acuity (Wernicke's Encephalopathy).</td>
+                                    <td>Ataxia; Confusion/impaired consciousness; Cardiovascular dysfunction (wet Beriberi).</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold text-[#522888]">B2 (Riboflavin)</td>
+                                    <td>Photophobia; Corneal vascularization; Conjunctivitis; Optic neuropathy.</td>
+                                    <td>Cheilosis (cracks at mouth corners); Glossitis (swollen tongue); Dermatitis.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            },
+            {
+                title: "Prevention & Management",
+                subtitle: "Problem Solving in Eye Health",
+                content: `
+                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Timely intervention is critical for reversible conditions like Nutritional Optic Neuropathy. Preventative strategies focus on adequate nutrient intake and addressing malabsorption.</p>
+
+                    <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 border-b border-[#BF9553] pb-2">Strategies:</h3>
+
+                    <div class="space-y-6 ml-4">
+                        <div class="p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
+                            <h4 class="text-xl font-semibold text-[#522888]">Dietary Strategy</h4>
+                            <p class="text-lg text-[#4a4a4a]">Encourage a varied diet rich in <strong class="font-semibold">B-vitamins</strong> (meat, dairy, whole grains), <strong class="font-semibold">Selenium</strong> (nuts, seafood), and <strong class="font-semibold">Copper</strong> (organ meats, legumes).</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
+                            <h4 class="text-xl font-semibold text-[#522888]">Risk Management</h4>
+                            <p class="text-lg text-[#4a4a4a]">Screen high-risk individuals (e.g., chronic alcohol users, bariatric surgery patients, individuals with malabsorption) for deficiencies.</p>
+                        </div>
+                        <div class="p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
+                            <h4 class="text-xl font-semibold text-[#522888]">Targeted Repletion</h4>
+                            <p class="text-lg text-[#4a4a4a]">Use specific vitamin/mineral supplements (e.g., parenteral B12) immediately upon diagnosis to halt progression and facilitate nerve recovery.</p>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        let currentSlideIndex = 0;
+        const slideContainer = document.getElementById('slide-container');
+        const sidebarList = document.getElementById('nav-links');
+        const slideIndicator = document.getElementById('slideIndicator');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Function to dynamically render all slides
+        function renderSlides() {
+            slideContainer.innerHTML = ''; // Clear existing slides
+            slides.forEach((slideData, index) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide w-full h-full';
+                slideDiv.id = 'slide-' + index;
+                slideDiv.style.display = 'none'; // Hide all slides initially
+
+                slideDiv.innerHTML = `
+                    <div class="flex-grow flex flex-col justify-center max-w-4xl mx-auto">
+                        <h1 class="text-5xl font-extrabold text-gray-800 mb-2 slide-title">${slideData.title}</h1>
+                        <h3 class="text-3xl font-light text-gray-600 mb-8 border-b border-[#BF9553] pb-4">${slideData.subtitle || ''}</h3>
+                        <div class="slide-content text-xl leading-relaxed text-[#4a4a4a]">${slideData.content}</div>
+                    </div>
+                `;
+                slideContainer.appendChild(slideDiv);
+            });
+        }
+        
+        // NEW: Function to dynamically render navigation sidebar
+        function renderNav() {
+            sidebarList.innerHTML = ''; // Clear existing links
+            slides.forEach((slide, index) => {
+                sidebarList.innerHTML += `
+                    <li>
+                        <button 
+                            onclick="showSlide(${index})" 
+                            id="nav-link-${index}"
+                            class="nav-link w-full text-left p-2 rounded-md text-gray-700"
+                        >
+                            <span class="font-medium">${index + 1}. ${slide.title}</span>
+                        </button>
+                    </li>
+                `;
+            });
+        }
+
+
+        // Function to show/hide slides and update controls
+        function showSlide(index) {
+            // Hide all slides
+            const allSlides = document.querySelectorAll('.slide');
+            allSlides.forEach(slide => {
+                slide.style.display = 'none';
+            });
+            
+            // Show the target slide
+            const targetSlide = document.getElementById('slide-' + index);
+            if(targetSlide) {
+                targetSlide.style.display = 'block';
+            }
+
+            // Update active state in sidebar
+            const allNavLinks = document.querySelectorAll('.nav-link');
+            allNavLinks.forEach((link, i) => {
+                if (i === index) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            currentSlideIndex = index;
+            slideIndicator.textContent = `Slide ${currentSlideIndex + 1} of ${slides.length}`;
+
+            // Control button states
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === slides.length - 1;
+        }
+
+        // Function for navigation
+        function changeSlide(direction) {
+            let newIndex = currentSlideIndex + direction;
+            if (newIndex >= 0 && newIndex < slides.length) {
+                showSlide(newIndex);
+            }
+        }
+
+        // Initialize presentation
+        renderNav();
+        renderSlides();
+        showSlide(currentSlideIndex);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+    </script>
+</body>
+</html>
