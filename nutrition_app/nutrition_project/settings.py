@@ -26,8 +26,26 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',default=False,cast=bool)
 
-ALLOWED_HOSTS = ['*']
+# Find ALLOWED_HOSTS and update:
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.app.github.dev',
+    'opulent-rotary-phone-974jq7vr9vrwfgp5-8000.app.github.dev',
+]
 
+# Add these lines (after ALLOWED_HOSTS):
+CSRF_TRUSTED_ORIGINS =  [
+    'https://opulent-rotary-phone-974jq7vr9vrwfgp5-8000.app.github.dev',
+    'https://*.app.github.dev',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Add these for development:
+CSRF_COOKIE_DOMAIN = None
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False
 
 # Application definition
 
@@ -38,6 +56,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    #Third party
+    'rest_framework',
+    'corsheaders',
+
+    #local
+    'nutrition',
+
 ]
 
 
@@ -45,14 +71,15 @@ INSTALLED_APPS = [
 ROOT_URLCONF = "nutrition_project.urls"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # CORS must be here
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # ← You need this!
-    'django.contrib.messages.middleware.MessageMiddleware',      # ← And this!
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # ← Comment this out
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+   
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -145,3 +172,8 @@ REST_FRAMEWORK = {
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Login/Logout URLs
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'

@@ -1,0 +1,410 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NutriAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Dashboard CSS */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(217, 249, 157, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 249, 157, 0.5);
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nutri: {
+                            dark: '#141814',   
+                            card: '#1E251E',   
+                            accent: '#2A352A', 
+                            highlight: '#D9F99D',
+                            text: '#E2E8F0',   
+                            muted: '#94A3B8',  
+                            hover: '#2F3B2F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-nutri-dark text-nutri-text h-screen w-full flex overflow-hidden selection:bg-nutri-highlight selection:text-nutri-dark">
+
+    <!-- Sidebar -->
+    <aside class="w-64 h-full flex flex-col p-6 gap-8 flex-shrink-0 z-20 hidden md:flex bg-nutri-dark border-r border-white/5">
+        <!-- Logo Area -->
+        <div class="flex items-center gap-2 text-2xl font-semibold tracking-tight text-white cursor-pointer">
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-nutri-highlight">
+                <path d="M10 30L15 10L25 30L30 10" stroke="#D9F99D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 15C8 15 12 20 20 20C28 20 32 15 32 15" stroke="#D9F99D" stroke-width="2" stroke-opacity="0.5"/>
+            </svg>
+            <span class="font-serif font-bold">NutriAI</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 flex flex-col gap-2">
+            <a href="{% url 'dashboard' %}" class="flex items-center gap-3 px-4 py-3 bg-nutri-hover text-white rounded-xl border border-white/10 shadow-sm transition-all group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 text-nutri-highlight"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-nutri-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors group">
+                <i data-lucide="utensils" class="w-5 h-5 group-hover:text-nutri-highlight transition-colors"></i>
+                <span>My Meals</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-nutri-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors group">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 group-hover:text-nutri-highlight transition-colors"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 text-nutri-muted hover:text-white hover:bg-white/5 rounded-xl transition-colors group">
+                <i data-lucide="user" class="w-5 h-5 group-hover:text-nutri-highlight transition-colors"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <!-- Bottom Actions -->
+        <div class="flex flex-col gap-2 mt-auto pt-6 border-t border-white/5">
+            <a href="{% url 'logout' %}" class="flex items-center gap-3 px-4 py-3 text-nutri-muted hover:text-red-400 hover:bg-white/5 rounded-xl transition-colors">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 h-full overflow-hidden relative">
+        
+        <!-- Main Card Container -->
+        <div class="relative w-full h-full rounded-[2rem] border border-white/10 bg-gradient-to-br from-[#222a22] via-[#1c221c] to-[#141814] overflow-y-auto overflow-x-hidden shadow-2xl flex flex-col">
+            
+            <!-- Abstract Wave Background Pattern -->
+            <div class="wave-bg">
+                <svg viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg" class="w-full h-full preserve-3d">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                            <stop offset="50%" style="stop-color:#D9F99D;stop-opacity:0.1" />
+                            <stop offset="100%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,200 C300,150 600,250 900,200 C1200,150 1440,250 1440,200 L1440,800 L0,800 Z" fill="url(#grad1)" />
+                </svg>
+            </div>
+
+            <!-- Top Header inside Main Panel -->
+            <header class="relative z-10 flex flex-col md:flex-row md:items-center justify-between px-8 py-8 gap-4 border-b border-white/5 bg-nutri-dark/30 backdrop-blur-sm sticky top-0">
+                <div>
+                    <h2 class="text-3xl font-serif font-bold text-white tracking-tight">Your Dashboard</h2>
+                    <p class="text-nutri-muted text-sm mt-1">Track your daily nutrition and reach your goals</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-xs text-nutri-muted uppercase tracking-wide">Welcome back</p>
+                        <p class="text-nutri-highlight font-semibold">{{ user.username|default:"User" }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-gradient-to-br from-nutri-highlight to-lime-600 p-[2px]">
+                        <div class="h-full w-full rounded-full bg-nutri-card flex items-center justify-center overflow-hidden">
+                            <i data-lucide="user" class="w-6 h-6 text-nutri-highlight"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Scrollable Area -->
+            <div class="relative z-10 px-8 py-8 space-y-8">
+
+                <!-- Stats Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Calories Card (Lime Theme) -->
+                    <div class="glass-card rounded-3xl p-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="flex justify-between items-start mb-6 relative">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-lime-500"></div>
+                                    <p class="text-nutri-muted text-xs font-bold tracking-wider uppercase">Calories</p>
+                                </div>
+                                <p class="text-4xl font-serif font-bold text-white">{{ total_calories|default:0|floatformat:0 }}</p>
+                            </div>
+                            <div class="p-3 bg-lime-500/10 rounded-2xl text-lime-400 border border-lime-500/20">
+                                <i data-lucide="flame" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs text-nutri-muted">
+                                <span>Progress</span>
+                                <span>{{ calories_percent|default:0|floatformat:0 }}%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-lime-400 to-lime-600 h-2 rounded-full shadow-[0_0_10px_rgba(132,204,22,0.5)] transition-all duration-300" style="width: {{ calories_percent|default:0|floatformat:0 }}%"></div>
+                            </div>
+                            <p class="text-xs text-white/60 pt-1">{{ remaining_calories|default:0|floatformat:0 }} cal remaining</p>
+                        </div>
+                    </div>
+
+                    <!-- Protein Card (Blue Theme) -->
+                    <div class="glass-card rounded-3xl p-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="flex justify-between items-start mb-6 relative">
+                             <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <p class="text-nutri-muted text-xs font-bold tracking-wider uppercase">Protein</p>
+                                </div>
+                                <p class="text-4xl font-serif font-bold text-white">{{ total_protein|default:0|floatformat:0 }}<span class="text-lg font-sans text-nutri-muted ml-1">g</span></p>
+                            </div>
+                            <div class="p-3 bg-blue-500/10 rounded-2xl text-blue-400 border border-blue-500/20">
+                                <i data-lucide="beef" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs text-nutri-muted">
+                                <span>Progress</span>
+                                <span>{{ protein_percent|default:0|floatformat:0 }}%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-400 to-indigo-500 h-2 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-300" style="width: {{ protein_percent|default:0|floatformat:0 }}%"></div>
+                            </div>
+                            <p class="text-xs text-white/60 pt-1">{{ remaining_protein|default:0|floatformat:0 }}g remaining</p>
+                        </div>
+                    </div>
+
+                    <!-- Carbs Card (Yellow/Orange Theme) -->
+                    <div class="glass-card rounded-3xl p-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="flex justify-between items-start mb-6 relative">
+                             <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <p class="text-nutri-muted text-xs font-bold tracking-wider uppercase">Carbs</p>
+                                </div>
+                                <p class="text-4xl font-serif font-bold text-white">{{ total_carbs|default:0|floatformat:0 }}<span class="text-lg font-sans text-nutri-muted ml-1">g</span></p>
+                            </div>
+                            <div class="p-3 bg-yellow-500/10 rounded-2xl text-yellow-400 border border-yellow-500/20">
+                                <i data-lucide="wheat" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs text-nutri-muted">
+                                <span>Progress</span>
+                                <span>{{ carbs_percent|default:0|floatformat:0 }}%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full shadow-[0_0_10px_rgba(234,179,8,0.5)] transition-all duration-300" style="width: {{ carbs_percent|default:0|floatformat:0 }}%"></div>
+                            </div>
+                            <p class="text-xs text-white/60 pt-1">{{ remaining_carbs|default:0|floatformat:0 }}g remaining</p>
+                        </div>
+                    </div>
+
+                    <!-- Fats Card (Purple Theme) -->
+                    <div class="glass-card rounded-3xl p-6 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="flex justify-between items-start mb-6 relative">
+                             <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                                    <p class="text-nutri-muted text-xs font-bold tracking-wider uppercase">Fats</p>
+                                </div>
+                                <p class="text-4xl font-serif font-bold text-white">{{ total_fats|default:0|floatformat:0 }}<span class="text-lg font-sans text-nutri-muted ml-1">g</span></p>
+                            </div>
+                            <div class="p-3 bg-purple-500/10 rounded-2xl text-purple-400 border border-purple-500/20">
+                                <i data-lucide="droplets" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                             <div class="flex justify-between text-xs text-nutri-muted">
+                                <span>Progress</span>
+                                <span>{{ fats_percent|default:0|floatformat:0 }}%</span>
+                            </div>
+                            <div class="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-purple-400 to-pink-500 h-2 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-300" style="width: {{ fats_percent|default:0|floatformat:0 }}%"></div>
+                            </div>
+                            <p class="text-xs text-white/60 pt-1">{{ remaining_fats|default:0|floatformat:0 }}g remaining</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Layout -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    
+                    <!-- Today's Meals (Left Col) -->
+                    <div class="lg:col-span-2">
+                        <div class="glass-card rounded-3xl p-8 h-full">
+                            <div class="flex justify-between items-center mb-8">
+                                <h3 class="text-2xl font-serif font-bold text-white flex items-center gap-3">
+                                    Today's Meals
+                                </h3>
+                                <button class="bg-nutri-highlight text-black px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-lime-300 transition-all shadow-[0_0_15px_rgba(217,249,157,0.2)] flex items-center gap-2">
+                                    <i data-lucide="plus" class="w-4 h-4"></i> Add Meal
+                                </button>
+                            </div>
+
+                            {% if today_meals %}
+                                <div class="space-y-4">
+                                    {% for meal in today_meals %}
+                                    <div class="bg-white/5 border border-white/5 rounded-2xl p-4 hover:bg-white/10 transition-colors group cursor-pointer">
+                                        <div class="flex justify-between items-center">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-16 h-16 rounded-xl bg-nutri-dark flex items-center justify-center border border-white/10 group-hover:border-nutri-highlight/50 transition-colors">
+                                                    <i data-lucide="utensils" class="w-8 h-8 text-nutri-highlight"></i>
+                                                </div>
+                                                <div>
+                                                    <p class="font-bold text-white text-lg">
+                                                        {% if meal.recipe %}
+                                                            {{ meal.recipe.title }}
+                                                        {% elif meal.food %}
+                                                            {{ meal.food.name }}
+                                                        {% else %}
+                                                            Custom Meal
+                                                        {% endif %}
+                                                    </p>
+                                                    <div class="flex items-center gap-2 text-xs text-nutri-muted mt-1">
+                                                        <span class="px-2 py-0.5 rounded-md bg-lime-500/10 text-lime-400 border border-lime-500/20 capitalize">{{ meal.meal_type|default:"meal" }}</span>
+                                                        <span>&bull;</span>
+                                                        <span>{{ meal.logged_at|time:"g:i A"|default:"N/A" }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-lg font-bold text-nutri-highlight">{{ meal.calories|default:0|floatformat:0 }} cal</p>
+                                                <p class="text-xs text-nutri-muted font-mono">P:{{ meal.protein_g|default:0|floatformat:0 }} C:{{ meal.carbs_g|default:0|floatformat:0 }} F:{{ meal.fats_g|default:0|floatformat:0 }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-12">
+                                    <i data-lucide="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                                    <p class="text-nutri-muted mt-4">No meals logged today</p>
+                                    <p class="text-sm text-nutri-muted/60">Start tracking your nutrition!</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Right (Profile & Actions) -->
+                    <div class="space-y-6">
+                        
+                        <!-- Profile Card -->
+                        <div class="relative rounded-3xl p-1 overflow-hidden shadow-xl">
+                            <!-- Gradient Border effect -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-nutri-highlight via-lime-600 to-nutri-dark opacity-30"></div>
+                            
+                            <div class="relative bg-[#161b16] rounded-[22px] p-6 h-full">
+                                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2 border-b border-white/5 pb-4">
+                                    <i data-lucide="scan-face" class="w-5 h-5 text-nutri-highlight"></i> 
+                                    Profile Summary
+                                </h3>
+                                <div class="space-y-4 text-sm">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-nutri-muted">Age</span>
+                                        <span class="text-white font-medium bg-white/5 px-3 py-1 rounded-lg">{{ profile.age|default:"N/A" }} yrs</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-nutri-muted">Weight</span>
+                                        <span class="text-white font-medium bg-white/5 px-3 py-1 rounded-lg">{{ profile.weight_kg|default:0|floatformat:0 }} kg</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-nutri-muted">Height</span>
+                                        <span class="text-white font-medium bg-white/5 px-3 py-1 rounded-lg">{{ profile.height_cm|default:0|floatformat:0 }} cm</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-nutri-muted">BMR</span>
+                                        <span class="text-white font-medium bg-white/5 px-3 py-1 rounded-lg">{{ profile.bmr|default:0|floatformat:0 }}</span>
+                                    </div>
+                                    <div class="pt-2 mt-2 border-t border-white/5">
+                                        <span class="text-nutri-muted block mb-2">Current Goal</span>
+                                        <span class="text-black bg-nutri-highlight px-3 py-1.5 rounded-lg font-bold text-xs uppercase tracking-wide w-full block text-center">{{ profile.goal|default:"Not Set" }}</span>
+                                    </div>
+                                </div>
+                                <button class="mt-6 w-full flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl text-sm font-medium transition-colors border border-white/10 hover:border-white/20">
+                                    <i data-lucide="settings-2" class="w-4 h-4"></i> Edit Settings
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="glass-card rounded-3xl p-6">
+                            <h3 class="text-lg font-bold text-white mb-4 px-1">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button class="w-full text-left px-4 py-4 bg-white/5 hover:bg-white/10 rounded-2xl transition border border-white/5 hover:border-lime-400/30 group flex items-center gap-4">
+                                    <div class="p-2.5 rounded-xl bg-lime-500/10 text-lime-400 group-hover:bg-lime-500/20 transition-colors">
+                                        <i data-lucide="wand-2" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-white block text-sm">AI Recipe Gen</span>
+                                        <span class="text-nutri-muted text-xs">Create meals instantly</span>
+                                    </div>
+                                </button>
+                                <button class="w-full text-left px-4 py-4 bg-white/5 hover:bg-white/10 rounded-2xl transition border border-white/5 hover:border-blue-400/30 group flex items-center gap-4">
+                                    <div class="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+                                        <i data-lucide="history" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-white block text-sm">History</span>
+                                        <span class="text-nutri-muted text-xs">View past logs</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons with correct method
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

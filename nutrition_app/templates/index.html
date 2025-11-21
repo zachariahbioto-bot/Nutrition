@@ -1,501 +1,524 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ocular Impact of Nutritional Deficiencies</title>
-    <!-- Load Tailwind CSS -->
+    <title>NutriAI - Smart Nutrition Made Simple</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load new fonts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts from Nutrition Two -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Typography from Nutrition Two */
         body {
-            /* Applied Aurora body font and colors */
             font-family: 'Poppins', sans-serif;
-            background-color: #FDFBF7;
-            color: #4a4a4a;
+            background-color: #141814;
+            color: #E2E8F0;
         }
-        /* Applied Aurora heading font */
-        h1, h2, h3, h4, h5, h6, .slide-title {
+        h1, h2, h3, h4, .font-serif {
             font-family: 'Cormorant Garamond', serif;
-            font-weight: 700;
-        }
-        /* Style for the active nav link, using Aurora palette */
-        .nav-link.active {
-            background-color: #522888; /* Deep Purple */
-            color: white;
-            font-weight: 600;
-            border-left: 3px solid #BF9553; /* Gold */
-            transform: translateX(5px);
-        }
-        .nav-link:hover {
-            color: #BF9553; /* Gold */
-            transform: translateX(5px);
-        }
-        .nav-link {
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-        /* Card style from Aurora */
-        .card {
-            background-color: #FFFFFF;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-        }
-        /* Custom table styling to match presentation look */
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1.1rem;
-        }
-        .styled-table thead tr {
-            background-color: #522888;
-            color: #ffffff;
-            text-align: left;
-        }
-        .styled-table th, .styled-table td {
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-        }
-        .styled-table tbody tr {
-            border-bottom: 1px solid #dddddd;
-        }
-        .styled-table tbody tr:nth-of-type(even) {
-            background-color: #f7f7f7;
-        }
-        .styled-table tbody tr:hover {
-            background-color: #FDFBF7;
         }
 
-        /* Styles for the new graphical analysis */
-        .nutrient-bar-bg {
-            background-color: #e9d5ff; /* Lighter purple */
-            border-radius: 9999px;
-            height: 0.65rem;
-            width: 100%;
-            overflow: hidden; /* Ensure inner bar is contained */
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .nutrient-bar-fill {
-            background-color: #522888; /* Deep Purple */
+        ::-webkit-scrollbar-track {
+            background: #1E241E; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #354135; 
+            border-radius: 4px;
+        }
+        
+        /* Abstract wave animation/positioning */
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            border-radius: 9999px;
-            text-align: center;
-            color: white;
-            font-size: 0.6rem;
-            line-height: 0.65rem;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        /* Glass card effect */
+        .glass-card {
+            background: rgba(30, 37, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-card:hover {
+            background: rgba(30, 37, 30, 0.9);
+            border-color: rgba(217, 249, 157, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Image masking for smooth blending */
+        .image-fade {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
         }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nutri: {
+                            dark: '#141814',   // Main background
+                            card: '#1E251E',   // Slightly lighter panel
+                            accent: '#2A352A', // Borders/Separators
+                            highlight: '#D9F99D', // Lime-200 approx
+                            text: '#E2E8F0',   // Main text
+                            muted: '#94A3B8',  // Secondary text
+                            hover: '#2F3B2F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="antialiased">
+<body class="antialiased relative overflow-x-hidden">
 
-    <div class="flex h-screen">
-        <!-- Sidebar (Interactive Navigation) - Styled with Aurora theme -->
-        <nav id="sidebar" class="w-72 bg-white border-r border-gray-200 p-4 overflow-y-auto flex-shrink-0 hidden md:block shadow-lg">
-            <h2 class="text-2xl font-bold text-[#522888] mb-4">Presentation Outline</h2>
-            <ul id="nav-links" class="space-y-1">
-                <!-- Navigation links will be dynamically populated by JavaScript -->
-            </ul>
-        </nav>
-
-        <!-- Main Content Area (Slides + Footer) -->
-        <div class="flex-grow flex flex-col h-screen">
-            
-            <!-- Slide Container -->
-            <main id="slide-container" class="flex-grow p-6 md:p-12 lg:p-16 overflow-y-auto bg-[#FDFBF7]">
-                <!-- Slides will be dynamically populated by JavaScript -->
-            </main>
-            
-            <!-- Navigation Controls (Footer) - Styled with Aurora theme -->
-            <div class="p-4 bg-white flex justify-between items-center z-10 shadow-lg border-t border-gray-200 flex-shrink-0">
-                <button id="prevBtn" onclick="changeSlide(-1)" class="px-6 py-2 bg-[#522888] hover:bg-[#754D9D] text-white font-semibold rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    &larr; Previous
-                </button>
-                <span id="slideIndicator" class="text-lg font-medium text-gray-700"></span>
-                <button id="nextBtn" onclick="changeSlide(1)" class="px-6 py-2 bg-[#522888] hover:bg-[#754D9D] text-white font-semibold rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Next &rarr;
-                </button>
-            </div>
+    <!-- Background Pattern (Fixed) -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="wave-bg">
+            <svg viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg" class="w-full h-full preserve-3d object-cover">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                        <stop offset="50%" style="stop-color:#D9F99D;stop-opacity:0.1" />
+                        <stop offset="100%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,200 C300,150 600,250 900,200 C1200,150 1440,250 1440,200 L1440,800 L0,800 Z" fill="url(#grad1)" />
+                <path d="M0,300 C400,200 800,400 1200,300 C1300,280 1440,320 1440,320" stroke="url(#grad1)" fill="none" stroke-width="1" />
+                <path d="M0,400 C200,350 500,450 800,400 C1100,350 1440,450 1440,400" stroke="url(#grad1)" fill="none" stroke-width="1" opacity="0.5"/>
+                <circle cx="80%" cy="20%" r="300" fill="#D9F99D" filter="url(#blurFilter)" opacity="0.05" />
+                <filter id="blurFilter">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="60" />
+                </filter>
+            </svg>
         </div>
     </div>
 
-    <script>
-        // Array of slide objects containing title and content (HTML)
-        // Content has been updated from the 'Nutritional Deficiencies and Ocular Health.pdf'
-        const slides = [
-            {
-                title: "The Ocular Impact of Nutritional Deficiencies and Toxicities",
-                subtitle: "Analysis of Micronutrient and Macronutrient Effects on Eye Structure and Function | October 26, 2025",
-                content: `
-                    <h2 class="text-3xl font-semibold mb-4 text-[#522888]">Abstract</h2>
-                    <p class="text-xl mb-6 text-[#4a4a4a]">This analysis focuses on the critical impact of specific micronutrients on ocular health. We investigate how deficiencies and toxicities of <strong class="text-[#522888]">Selenium (Se)</strong>, <strong class="text-[#522888]">Copper (Cu)</strong>, and <strong class="text-[#522888]">B-Complex Vitamins</strong> directly compromise eye structure and function. The discussion also addresses how macronutrient deficiencies can exacerbate these conditions.</p>
-                    <p class="text-xl text-[#4a4a4a]">The core mechanisms examined are <strong class="text-[#BF9553]">oxidative damage</strong> in the lens and retina, <strong class="text-[#BF9553]">pigmentation control</strong>, and the integrity of the <strong class="text-[#BF9553]">optic nerve</strong>, linking specific nutrient imbalances to conditions like cataracts, macular degeneration, and nutritional optic neuropathy.</p>
-                `
-            },
-            {
-                title: "Part I: Micronutrient Focus",
-                subtitle: "Specific Ocular Roles",
-                content: `
-                    <p class="text-2xl mt-4 text-[#4a4a4a]">Micronutrients are essential for specific biochemical pathways that maintain ocular integrity. Deficiencies often lead to distinct, identifiable ocular diseases.</p>
-                    <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 border-b border-[#BF9553] pb-2">Focus Nutrients:</h3>
-                    <ul class="list-disc list-inside text-2xl space-y-2 ml-4">
-                        <li><strong class="text-[#522888]">Selenium (Se)</strong>: Oxidative protection</li>
-                        <li><strong class="text-[#522888]">Copper (Cu)</strong>: Pigmentation and nerve function</li>
-                        <li><strong class="text-[#522888]">B-Complex Vitamins</strong>: Optic nerve health</li>
-                    </ul>
-                `
-            },
-            {
-                title: "1. Selenium (Se)",
-                subtitle: "Oxidative Damage Protection",
-                content: `
-                    <h3 class="text-3xl font-semibold mb-4 text-[#522888]">Mechanism:</h3>
-                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
-                        <li>Selenium is incorporated into the antioxidant enzyme <strong class="text-[#BF9553]">Glutathione Peroxidase (GPx)</strong>.</li>
-                        <li>GPx is highly concentrated in the <strong class="text-[#BF9553]">lens and retina</strong>, which are vulnerable to oxidative stress (light exposure, high metabolism).</li>
-                    </ul>
-                    <div class="mt-8 p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
-                        <h4 class="text-xl font-semibold text-[#522888]">Deficiency Effect & Manifestations:</h4>
-                        <ul class="list-disc list-inside text-lg space-y-2 ml-4 text-[#4a4a4a]">
-                            <li>Reduced GPx activity leads to accumulation of reactive oxygen species.</li>
-                            <li><strong class="text-[#B97F24]">Ocular Manifestations:</strong> Strongly implicated in <strong class="font-semibold">Age-Related Macular Degeneration (AMD)</strong> and the formation/progression of <strong class="font-semibold">cataracts</strong> (lens opacification).</li>
-                            <li><strong class="text-[#B97F24]">Disease Linkage:</strong> Low status is also studied in context of Thyroid Eye Disease.</li>
-                        </ul>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/5 bg-nutri-dark/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-nutri-highlight">
+                        <path d="M10 30L15 10L25 30L30 10" stroke="#D9F99D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 15C8 15 12 20 20 20C28 20 32 15 32 15" stroke="#D9F99D" stroke-width="2" stroke-opacity="0.5"/>
+                    </svg>
+                    <span class="font-serif font-bold text-2xl tracking-tight text-white">NutriAI</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#hero" class="text-nutri-muted hover:text-nutri-highlight px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="#features" class="text-nutri-muted hover:text-nutri-highlight px-3 py-2 rounded-md text-sm font-medium transition-colors">Features</a>
+                        <a href="#how-it-works" class="text-nutri-muted hover:text-nutri-highlight px-3 py-2 rounded-md text-sm font-medium transition-colors">How It Works</a>
+                        <a href="#pricing" class="text-nutri-muted hover:text-nutri-highlight px-3 py-2 rounded-md text-sm font-medium transition-colors">Pricing</a>
                     </div>
-                `
-            },
-            {
-                title: "2. Copper (Cu)",
-                subtitle: "Pigmentation and Nerve Health",
-                content: `
-                    <h3 class="text-3xl font-semibold mb-4 text-[#522888]">Key Ocular Functions:</h3>
-                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
-                        <li><strong class="text-[#BF9553]">Pigmentation:</strong> Essential for creating <strong class="font-semibold">melanin</strong> (color in the iris and retina).</li>
-                        <li><strong class="text-[#BF9553]">Energy:</strong> Vital for <strong class="font-semibold">cellular energy production</strong>, crucial for optic nerve structure.</li>
-                    </ul>
-                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 border-l-4 border-red-500 bg-white rounded-md card">
-                            <h4 class="text-xl font-semibold text-red-700">Deficiency: Vision Loss</h4>
-                            <p class="text-lg text-[#4a4a4a]">Low copper impairs nerve energy and myelin, leading to demyelination.</p>
-                            <ul class="list-disc list-inside text-sm mt-2 ml-4">
-                                <li><strong class="text-[#522888]">Presentation:</strong> Painless, progressive bilateral vision loss (similar to Nutritional Optic Neuropathy).</li>
-                            </ul>
-                        </div>
-                        <div class="p-4 border-l-4 border-amber-500 bg-white rounded-md card">
-                            <h4 class="text-xl font-semibold text-amber-700">Toxicity: Deposits</h4>
-                            <p class="text-lg text-[#4a4a4a]">Excess copper (e.g., in Wilson Disease) deposits in ocular tissues.</p>
-                            <ul class="list-disc list-inside text-sm mt-2 ml-4">
-                                <li><strong class="text-[#522888]">Presentation:</strong> <strong class="font-semibold">Kayser-Fleischer Rings</strong>—distinctive copper rings visible in the cornea.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "3. B Complex Vitamins",
-                subtitle: "Nutritional Optic Neuropathy (NON)",
-                content: `
-                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Deficiencies in B-complex vitamins are the primary cause of <strong class="text-[#BF9553]">Nutritional Optic Neuropathy (NON)</strong>, a reversible condition if treated promptly.</p>
+                </div>
 
-                    <!-- START BIOLOGICAL DRAWING (SVG) -->
-                    <div class="grid md:grid-cols-2 gap-8 items-center mb-8">
-                        <!-- SVG Drawing of Optic Nerve -->
-                        <div class="p-4 bg-white rounded-lg shadow-inner">
-                             <h4 class="text-xl font-bold text-[#522888] mb-2">Location of Damage (NON)</h4>
-                             <svg width="100%" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-                                        <polygon points="0 0, 10 3.5, 0 7" fill="#BF9553" />
-                                    </marker>
-                                </defs>
-                                <style>
-                                    /* Ensure text is visible and fits the theme */
-                                    .svg-label { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; fill: #522888; }
-                                    .svg-highlight { font-family: 'Poppins', sans-serif; font-size: 14px; fill: #BF9553; }
-                                </style>
-                                <!-- Optic Nerve Trunk (Darker color) -->
-                                <path d="M 50 100 C 150 50, 250 150, 350 100" stroke="#4a4a4a" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.2"/>
-                                
-                                <!-- Papillomacular Bundle (Central area of damage) - Highlighted in theme color -->
-                                <path d="M 50 100 C 150 80, 250 120, 350 100" stroke="#BF9553" stroke-width="10" fill="none" stroke-linecap="round"/>
-                                
-                                <!-- Nerve End (Retina Side) -->
-                                <circle cx="50" cy="100" r="15" fill="#522888" opacity="0.8"/>
+                <!-- CTA Button -->
+                <div class="hidden md:block">
+                    <a href="{% url 'signup' %}" class="bg-nutri-highlight text-black px-6 py-2 rounded-full font-serif font-bold text-sm hover:bg-lime-300 transition-all shadow-[0_0_15px_rgba(217,249,157,0.2)]">
+                        Get Started
+                    </a>
+                </div>
 
-                                <!-- Labeling -->
-                                <text x="360" y="105" class="svg-label">Optic Nerve</text>
-                                <text x="15" y="65" class="svg-label">Retina</text>
-                                
-                                <!-- Indicator for affected bundle -->
-                                <text x="100" y="180" class="svg-highlight">Papillomacular Bundle (Affected)</text>
-                                <line x1="180" y1="170" x2="250" y2="110" stroke="#BF9553" stroke-width="2" marker-end="url(#arrowhead)"/>
-                            </svg>
-                        </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="inline-flex items-center justify-center p-2 rounded-md text-nutri-muted hover:text-white hover:bg-nutri-card focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div class="hidden md:hidden bg-nutri-card border-b border-white/5" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#hero" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#features" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Features</a>
+                <a href="#how-it-works" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">How It Works</a>
+                <a href="#pricing" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
+            </div>
+        </div>
+    </nav>
 
-                        <!-- Content for NON Explanation -->
-                        <div class="flex flex-col justify-center">
-                            <h4 class="text-xl font-semibold text-[#522888]">Key Pathophysiology:</h4>
-                            <p class="text-lg text-[#4a4a4a]">NON selectively targets the nerve fibers connecting the macula (central retina) to the optic nerve head. These fibers form the <strong class="font-semibold">papillomacular bundle</strong>, leading to specific central vision loss patterns.</p>
-                        </div>
-                    </div>
-                    <!-- END BIOLOGICAL DRAWING (SVG) -->
-                    
-                    <div class="space-y-6">
-                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
-                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B12 (Cobalamin)</h4>
-                            <p class="text-xl text-[#4a4a4a]">Essential for myelin synthesis and maintenance; deficiency causes demyelination and axonal loss in the papillomacular bundle.</p>
-                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
-                                <li><strong class="text-[#B97F24]">Vision Effect:</strong> Bilateral, progressive central vision loss; difficulty distinguishing <strong class="font-semibold">red and green colors</strong> (dyschromatopsia).</li>
-                            </ul>
-                        </div>
-                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
-                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B1 (Thiamine)</h4>
-                            <p class="text-xl text-[#4a4a4a]">Required for nerve cell energy metabolism; acute deficiency leads to Wernicke's Encephalopathy.</p>
-                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
-                                <li><strong class="text-[#B97F24]">Ocular Signs:</strong> Nystagmus, <strong class="font-semibold">ophthalmoplegia</strong> (paralysis of eye muscles), and loss of visual acuity.</li>
-                            </ul>
-                        </div>
-                        <div class="p-4 border-l-4 border-[#522888] bg-white rounded-md card">
-                            <h4 class="text-2xl font-bold text-[#522888]">Vitamin B2 (Riboflavin)</h4>
-                            <p class="text-xl text-[#4a4a4a]">Essential coenzyme and antioxidant.</p>
-                            <ul class="list-disc list-inside text-lg mt-2 ml-4">
-                                <li><strong class="text-[#B97F24]">Ocular Signs:</strong> <strong class="font-semibold">Photophobia</strong> (light sensitivity) and <strong class="font-semibold">corneal vascularization</strong> (blood vessel growth into the cornea).</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "Part II: Macronutrient Deficiencies",
-                subtitle: "General Ocular Compromise",
-                content: `
-                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Severe deficiencies in macronutrients (Protein and Fats) contribute to general ocular compromise, often by exacerbating micronutrient issues.</p>
-                    
-                    <h3 class="text-2xl font-bold mt-8 mb-4 text-[#BF9553] border-b border-gray-300 pb-2">Protein-Energy Malnutrition (PEM)</h3>
-                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
-                        <li>PEM severely exacerbates deficiencies in micronutrients like <strong class="text-[#522888]">Vitamin A</strong>.</li>
-                        <li>This leads to severe dry eye disease (<strong class="text-[#B97F24]">xerophthalmia</strong>) and corneal damage.</li>
-                    </ul>
-                    
-                    <h3 class="text-2xl font-bold mt-8 mb-4 text-[#BF9553] border-b border-gray-300 pb-2">Essential Fatty Acids (EFA)</h3>
-                    <ul class="list-disc list-inside text-2xl space-y-4 ml-4">
-                        <li>The retina is rich in <strong class="text-[#522888]">Docosahexaenoic Acid (DHA)</strong>, an &omega;-3 fatty acid.</li>
-                        <li>EFA deficiency compromises photoreceptor membrane function, leading to <strong class="text-[#B97F24]">impaired visual acuity</strong> (especially in development) and contributing to <strong class="text-[#B97F24]">Dry Eye Syndrome</strong>.</li>
-                    </ul>
-                `
-            },
-            {
-                title: "Table 1: B-Vitamin Clinical Presentations",
-                subtitle: "Ocular and Systemic Signs",
-                content: `
-                    <div class="mt-8 overflow-x-auto card">
-                        <table class="styled-table">
-                            <thead>
-                                <tr>
-                                    <th>B-Vitamin</th>
-                                    <th>Ocular Presentation</th>
-                                    <th>Associated Systemic Presentations</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="font-bold text-[#522888]">B12 (Cobalamin)</td>
-	                                    <td>Bilateral, painless central vision loss; Red-green dyschromatopsia; Cecocentral scotoma; Optic atrophy (late stage).</td>
-                                    <td>Peripheral neuropathy (paresthesias); Megaloblastic anemia; Ataxia; Cognitive changes.</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-bold text-[#522888]">B1 (Thiamine)</td>
-                                    <td>Nystagmus; Ophthalmoplegia; Loss of visual acuity (Wernicke's Encephalopathy).</td>
-                                    <td>Ataxia; Confusion/impaired consciousness; Cardiovascular dysfunction (wet Beriberi).</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-bold text-[#522888]">B2 (Riboflavin)</td>
-                                    <td>Photophobia; Corneal vascularization; Conjunctivitis; Optic neuropathy.</td>
-                                    <td>Cheilosis (cracks at mouth corners); Glossitis (swollen tongue); Dermatitis.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `
-            },
-            {
-                title: "Prevention & Management",
-                subtitle: "Problem Solving in Eye Health",
-                content: `
-                    <p class="text-2xl mt-4 mb-6 text-[#4a4a4a]">Timely intervention is critical for reversible conditions like Nutritional Optic Neuropathy. Preventative strategies focus on adequate nutrient intake and addressing malabsorption.</p>
-
-                    <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-800 border-b border-[#BF9553] pb-2">Strategies:</h3>
-
-                    <div class="space-y-6 ml-4">
-                        <!-- MODIFIED CARD WITH GRAPHICAL ANALYSIS -->
-                        <div class="p-6 border-l-4 border-[#BF9553] bg-white rounded-md card">
-                            <h4 class="text-xl font-semibold text-[#522888]">Dietary Strategy</h4>
-                            <p class="text-lg text-[#4a4a4a] mb-4">Encourage a varied diet rich in <strong class="font-semibold">B-vitamins</strong>, <strong class="font-semibold">Selenium</strong>, and <strong class="font-semibold">Copper</strong>.</p>
-                            
-                            <!-- NEW: Graphical Nutrient Analysis -->
-                            <div class="mt-4 pt-4 border-t border-gray-200 space-y-5">
-                                <h5 class="text-lg font-semibold text-gray-700">Graphical Nutrient Analysis (Approx. Adult RDA)</h5>
-                                
-                                <!-- Nutrient 1: B-Vitamins (B12) -->
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-bold text-[#522888]">B-Vitamins (e.g., B12)</span>
-                                        <span class="text-sm font-medium text-[#BF9553]">RDA: ~2.4 mcg</span>
-                                    </div>
-                                    <div class="nutrient-bar-bg">
-                                        <div class="nutrient-bar-fill" style="width: 100%;"></div>
-                                    </div>
-                                    <p class="mt-2 text-base text-gray-600"><strong class="text-gray-800">Sources:</strong> Meat, poultry, fish, dairy products, fortified cereals.</p>
-                                </div>
-                                
-                                <!-- Nutrient 2: Selenium -->
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-bold text-[#522888]">Selenium (Se)</span>
-                                        <span class="text-sm font-medium text-[#BF9553]">RDA: ~55 mcg</span>
-                                    </div>
-                                    <div class="nutrient-bar-bg">
-                                        <div class="nutrient-bar-fill" style="width: 100%;"></div>
-                                    </div>
-                                    <p class="mt-2 text-base text-gray-600"><strong class="text-gray-800">Sources:</strong> Brazil nuts, seafood (tuna, halibut), organ meats, grains.</p>
-                                </div>
-
-                                <!-- Nutrient 3: Copper -->
-                                <div>
-                                    <div class="flex justify-between items-center mb-1">
-                                        <span class="font-bold text-[#522888]">Copper (Cu)</span>
-                                        <span class="text-sm font-medium text-[#BF9553]">RDA: ~900 mcg</span>
-                                    </div>
-                                    <div class="nutrient-bar-bg">
-                                        <div class="nutrient-bar-fill" style="width: 100%;"></div>
-                                    </div>
-                                    <p class="mt-2 text-base text-gray-600"><strong class="text-gray-800">Sources:</strong> Organ meats (liver), shellfish, nuts, seeds, whole grains, legumes.</p>
-                                </div>
-
-                            </div>
-                            <!-- END: Graphical Nutrient Analysis -->
-
-                        </div>
-                        <!-- END MODIFIED CARD -->
-
-                        <div class="p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
-                            <h4 class="text-xl font-semibold text-[#522888]">Risk Management</h4>
-                            <p class="text-lg text-[#4a4a4a]">Screen high-risk individuals (e.g., chronic alcohol users, bariatric surgery patients, individuals with malabsorption) for deficiencies.</p>
-                        </div>
-                        <div class="p-4 border-l-4 border-[#BF9553] bg-white rounded-md card">
-                            <h4 class="text-xl font-semibold text-[#522888]">Targeted Repletion</h4>
-                            <p class="text-lg text-[#4a4a4a]">Use specific vitamin/mineral supplements (e.g., parenteral B12) immediately upon diagnosis to halt progression and facilitate nerve recovery.</p>
-                        </div>
-                    </div>
-                `
-            }
-        ];
-
-        let currentSlideIndex = 0;
-        const slideContainer = document.getElementById('slide-container');
-        const sidebarList = document.getElementById('nav-links');
-        const slideIndicator = document.getElementById('slideIndicator');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-
-        // Function to dynamically render all slides
-        function renderSlides() {
-            slideContainer.innerHTML = ''; // Clear existing slides
-            slides.forEach((slideData, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'slide w-full h-full';
-                slideDiv.id = 'slide-' + index;
-                slideDiv.style.display = 'none'; // Hide all slides initially
-
-                slideDiv.innerHTML = `
-                    <div class="flex-grow flex flex-col justify-center max-w-4xl mx-auto">
-                        <h1 class="text-5xl font-extrabold text-gray-800 mb-2 slide-title">${slideData.title}</h1>
-                        <h3 class="text-3xl font-light text-gray-600 mb-8 border-b border-[#BF9553] pb-4">${slideData.subtitle || ''}</h3>
-                        <div class="slide-content text-xl leading-relaxed text-[#4a4a4a]">${slideData.content}</div>
-                    </div>
-                `;
-                slideContainer.appendChild(slideDiv);
-            });
-        }
-        
-        // NEW: Function to dynamically render navigation sidebar
-        function renderNav() {
-            sidebarList.innerHTML = ''; // Clear existing links
-            slides.forEach((slide, index) => {
-                sidebarList.innerHTML += `
-                    <li>
-                        <button 
-                            onclick="showSlide(${index})" 
-                            id="nav-link-${index}"
-                            class="nav-link w-full text-left p-2 rounded-md text-gray-700"
-                        >
-                            <span class="font-medium">${index + 1}. ${slide.title}</span>
-                        </button>
-                    </li>
-                `;
-            });
-        }
-
-
-        // Function to show/hide slides and update controls
-        function showSlide(index) {
-            // Hide all slides
-            const allSlides = document.querySelectorAll('.slide');
-            allSlides.forEach(slide => {
-                slide.style.display = 'none';
-            });
+    <!-- Hero Section -->
+    <section id="hero" class="relative z-10 min-h-screen flex items-center pt-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
             
-            // Show the target slide
-            const targetSlide = document.getElementById('slide-' + index);
-            if(targetSlide) {
-                targetSlide.style.display = 'block';
-            }
+            <!-- Text Content -->
+            <div class="text-left order-2 lg:order-1 relative z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-nutri-highlight text-sm mb-6 backdrop-blur-sm">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>AI-Powered Nutrition Tracking</span>
+                </div>
 
-            // Update active state in sidebar
-            const allNavLinks = document.querySelectorAll('.nav-link');
-            allNavLinks.forEach((link, i) => {
-                if (i === index) {
-                    link.classList.add('active');
-                } else {
-                    link.classList.remove('active');
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight drop-shadow-lg leading-[1.1]">
+                    Smart Nutrition <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-200 to-lime-500 italic">Made Simple</span>
+                </h1>
+
+                <p class="text-nutri-muted text-lg md:text-xl max-w-lg leading-relaxed mb-10 font-light">
+                    Transform your kitchen ingredients into personalized, healthy meals. Experience the future of diet planning with NutriAI.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="" class="bg-nutri-highlight text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all shadow-[0_0_20px_rgba(217,249,157,0.3)] flex items-center justify-center gap-2 font-serif">
+                        Start Free Trial <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="{% url 'signup' %}" class="bg-white/5 text-white border border-white/10 px-8 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition-all flex items-center justify-center font-serif">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="relative order-1 lg:order-2 h-full flex items-center justify-center">
+                <!-- Abstract Glow -->
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-lime-500/10 to-transparent blur-3xl rounded-full pointer-events-none"></div>
+                
+                <div class="relative z-10 w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-white/10 rotate-2 hover:rotate-0 transition-transform duration-700">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2053&auto=format&fit=crop" alt="Healthy Bowl of Food" class="w-full h-auto object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-500">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute bottom-6 left-6 bg-nutri-card/90 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-lg flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-nutri-highlight flex items-center justify-center text-black">
+                            <i data-lucide="check" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-nutri-muted uppercase tracking-wider">Daily Goal</p>
+                            <p class="text-white font-serif font-bold text-lg">Protein Met</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="relative z-10 py-24 bg-nutri-dark/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Why Choose NutriAI?</h2>
+                <p class="text-nutri-muted max-w-2xl mx-auto text-lg">Advanced AI meeting culinary expertise.</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center gap-12 mb-20">
+                <div class="lg:w-1/2 w-full relative">
+                     <div class="absolute -inset-4 bg-gradient-to-r from-lime-500/20 to-lime-900/20 blur-2xl rounded-full opacity-50"></div>
+                     <!-- UPDATED IMAGE HERE -->
+                     <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop" alt="Cooking with Tablet" class="relative rounded-2xl border border-white/10 shadow-2xl w-full object-cover h-[400px] grayscale-[30%] hover:grayscale-0 transition-all duration-500">
+                </div>
+                
+                <div class="lg:w-1/2 space-y-8">
+                    <div>
+                        <h3 class="text-3xl font-bold text-white mb-2">Data-Driven Dieting</h3>
+                        <p class="text-nutri-muted leading-relaxed">Our AI analyzes your dietary preferences against thousands of recipes. We don't just count calories; we optimize nutrition density.</p>
+                    </div>
+                    
+                    <!-- Mini Chart -->
+                    <div class="bg-nutri-card/50 p-6 rounded-2xl border border-white/5 shadow-xl">
+                        <h4 class="text-white font-serif mb-4 text-lg">Feature Distribution</h4>
+                        <div class="relative h-[250px] w-full">
+                            <canvas id="featuresChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="bot" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">AI Recipe Generation</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">Get instant recipe suggestions based on your kitchen ingredients and nutritional goals.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="bar-chart-3" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">Smart Tracking</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">Automatic macro and calorie tracking with personalized calculations tailored to your body.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="clock" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">Time-Aware Suggestions</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">Meal recommendations tailored to your daily routine and time available for cooking.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="target" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">Goal-Based Plans</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">Dynamically adjusted nutrition plans for weight loss, muscle building, or maintenance.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="activity" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">Medical Support</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">Specialized profiles for chronic conditions ensuring your diet is safe and effective.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass-card p-8 rounded-2xl transition-all duration-300 group">
+                    <div class="w-12 h-12 bg-lime-400/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-lime-400/20 transition-colors">
+                        <i data-lucide="smartphone" class="text-nutri-highlight w-6 h-6"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-white mb-3 font-serif">Seamless Logging</h4>
+                    <p class="text-nutri-muted text-sm leading-relaxed">One-tap automatic logging of cooked recipes directly into your daily diary.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="relative z-10 py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-bold text-white mb-4">How It Works</h3>
+                <p class="text-nutri-muted">Follow these simple steps to get started with NutriAI.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="relative group">
+                    <div class="bg-nutri-card border border-white/5 p-8 rounded-2xl h-full hover:border-nutri-highlight/30 transition-colors flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-dashed border-lime-200/30 flex items-center justify-center mb-6">
+                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 flex items-center justify-center text-black font-bold text-xl shadow-lg group-hover:scale-110 transition-transform">1</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 font-serif">Set Your Profile</h4>
+                        <p class="text-nutri-muted text-sm">Enter age, weight, height, and goals to calibrate the AI.</p>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative group">
+                    <div class="bg-nutri-card border border-white/5 p-8 rounded-2xl h-full hover:border-nutri-highlight/30 transition-colors flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-dashed border-lime-200/30 flex items-center justify-center mb-6">
+                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 flex items-center justify-center text-black font-bold text-xl shadow-lg group-hover:scale-110 transition-transform">2</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 font-serif">Add Ingredients</h4>
+                        <p class="text-nutri-muted text-sm">Snap a photo or list what's currently in your kitchen.</p>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative group">
+                    <div class="bg-nutri-card border border-white/5 p-8 rounded-2xl h-full hover:border-nutri-highlight/30 transition-colors flex flex-col items-center text-center">
+                        <div class="w-16 h-16 rounded-full border-2 border-dashed border-lime-200/30 flex items-center justify-center mb-6">
+                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 flex items-center justify-center text-black font-bold text-xl shadow-lg group-hover:scale-110 transition-transform">3</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 font-serif">Get Recipes</h4>
+                        <p class="text-nutri-muted text-sm">AI generates delicious options that fit your exact macros.</p>
+                    </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="relative group">
+                    <div class="bg-nutri-card border border-white/5 p-8 rounded-2xl h-full hover:border-nutri-highlight/30 transition-colors flex flex-col items-center text-center">
+                         <div class="w-16 h-16 rounded-full border-2 border-dashed border-lime-200/30 flex items-center justify-center mb-6">
+                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-lime-200 to-lime-400 flex items-center justify-center text-black font-bold text-xl shadow-lg group-hover:scale-110 transition-transform">4</div>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3 font-serif">Cook & Track</h4>
+                        <p class="text-nutri-muted text-sm">Follow instructions and auto-log nutrition data instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="relative z-10 py-24 bg-nutri-dark/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h3 class="text-4xl font-bold text-white mb-4">Choose Your Plan</h3>
+                <p class="text-nutri-muted">Select the plan that best fits your needs.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Free Plan -->
+                <div class="bg-nutri-card border border-white/5 p-8 rounded-3xl flex flex-col hover:border-white/10 transition-colors">
+                    <h4 class="text-xl text-white font-serif font-bold mb-2">Free</h4>
+                    <p class="text-4xl font-bold text-white mb-6">$0<span class="text-base font-normal text-nutri-muted font-sans">/mo</span></p>
+                    <ul class="space-y-4 mb-8 flex-1">
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Manual food logging</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Basic calorie tracking</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Simple daily goals</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Limited food database</li>
+                    </ul>
+                    <a href="{% url 'signup' %}" class="w-full block text-center bg-white/5 hover:bg-white/10 text-white py-3 rounded-full font-bold transition-colors border border-white/10">Get Started</a>
+                </div>
+
+                <!-- Premium Plan (Highlighted) -->
+                <div class="bg-gradient-to-b from-lime-900/30 to-[#1a201a] border border-nutri-highlight/30 p-8 rounded-3xl flex flex-col relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(217,249,157,0.1)]">
+                    <div class="absolute top-0 right-0 bg-nutri-highlight text-black text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-2xl">POPULAR</div>
+                    <h4 class="text-xl text-white font-serif font-bold mb-2">Premium</h4>
+                    <p class="text-4xl font-bold text-white mb-6">$9<span class="text-base font-normal text-nutri-muted font-sans">/mo</span></p>
+                    <ul class="space-y-4 mb-8 flex-1">
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>AI Recipe Generation</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Smart meal suggestions</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Auto-logging</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Advanced analytics</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Custom meal plans</li>
+                        <li class="flex items-center text-white text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Priority support</li>
+                    </ul>
+                    <a href="#" class="w-full block text-center bg-nutri-highlight text-black py-3 rounded-full font-bold hover:bg-lime-300 transition-colors shadow-lg">Start Free Trial</a>
+                </div>
+
+                <!-- Medical Plan -->
+                <div class="bg-nutri-card border border-white/5 p-8 rounded-3xl flex flex-col hover:border-white/10 transition-colors">
+                    <h4 class="text-xl text-white font-serif font-bold mb-2">Medical</h4>
+                    <p class="text-4xl font-bold text-white mb-6">$19<span class="text-base font-normal text-nutri-muted font-sans">/mo</span></p>
+                    <ul class="space-y-4 mb-8 flex-1">
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Everything in Premium</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Disease-specific plans</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Medication tracking</li>
+                        <li class="flex items-center text-nutri-muted text-sm"><i data-lucide="check" class="text-nutri-highlight w-4 h-4 mr-3"></i>Clinical nutrition support</li>
+                    </ul>
+                    <a href="#" class="w-full block text-center bg-white/5 hover:bg-white/10 text-white py-3 rounded-full font-bold transition-colors border border-white/10">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative z-10 py-20 px-4">
+        <div class="max-w-5xl mx-auto rounded-3xl relative overflow-hidden">
+            <!-- Background Image for CTA -->
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-20" alt="Food Background">
+                <div class="absolute inset-0 bg-gradient-to-r from-nutri-dark to-lime-900/80 mix-blend-multiply"></div>
+            </div>
+            
+            <div class="relative z-10 p-12 text-center border border-white/10 rounded-3xl">
+                <h3 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Nutrition?</h3>
+                <p class="text-lg text-nutri-muted mb-8 max-w-2xl mx-auto">Join thousands of users achieving their health goals with AI-powered nutrition.</p>
+                <a href="#" class="inline-flex items-center gap-2 bg-nutri-highlight text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all shadow-[0_0_20px_rgba(217,249,157,0.3)] font-serif">
+                    Start Your Free Trial <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/5 py-12 bg-nutri-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center gap-2 mb-6 opacity-50">
+                <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-nutri-highlight">
+                    <path d="M10 30L15 10L25 30L30 10" stroke="#D9F99D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="font-serif font-bold text-lg text-white">NutriAI</span>
+            </div>
+            <p class="text-nutri-muted text-sm">&copy; 2025 NutriAI. All rights reserved.</p>
+            <div class="flex justify-center gap-6 mt-6">
+                <a href="#" class="text-nutri-muted hover:text-white transition-colors text-sm">Privacy Policy</a>
+                <a href="#" class="text-nutri-muted hover:text-white transition-colors text-sm">Terms of Service</a>
+                <a href="#" class="text-nutri-muted hover:text-white transition-colors text-sm">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Chart.js implementation adapted for Dark Mode
+            const ctx = document.getElementById('featuresChart').getContext('2d');
+            
+            // Define colors to match the Lime theme
+            const limeColors = [
+                '#D9F99D', // Lime-200
+                '#BEF264', // Lime-300
+                '#A3E635', // Lime-400
+                '#84CC16', // Lime-500
+                '#65A30D', // Lime-600
+                '#4D7C0F'  // Lime-700
+            ];
+
+            const featuresChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'AI Recipe Generation', 
+                        'Smart Tracking', 
+                        'Time-Aware Suggestions', 
+                        'Goal-Based Plans', 
+                        'Medical Support', 
+                        'Seamless Logging'
+                    ],
+                    datasets: [{
+                        label: 'Key Features',
+                        data: [20, 20, 15, 15, 15, 15],
+                        backgroundColor: limeColors,
+                        borderColor: '#1E251E', // Match card background
+                        borderWidth: 4,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false, // Hide legend for cleaner look in small card
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 37, 30, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#D9F99D',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            titleFont: {
+                                family: "'Cormorant Garamond', serif",
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: "'Poppins', sans-serif",
+                                size: 12
+                            }
+                        }
+                    },
+                    cutout: '70%'
                 }
             });
-
-            currentSlideIndex = index;
-            slideIndicator.textContent = `Slide ${currentSlideIndex + 1} of ${slides.length}`;
-
-            // Control button states
-            prevBtn.disabled = currentSlideIndex === 0;
-            nextBtn.disabled = currentSlideIndex === slides.length - 1;
-        }
-
-        // Function for navigation
-        function changeSlide(direction) {
-            let newIndex = currentSlideIndex + direction;
-            if (newIndex >= 0 && newIndex < slides.length) {
-                showSlide(newIndex);
-            }
-        }
-
-        // Initialize presentation
-        renderNav();
-        renderSlides();
-        showSlide(currentSlideIndex);
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
-                changeSlide(1);
-            } else if (e.key === 'ArrowLeft') {
-                changeSlide(-1);
-            }
         });
-
     </script>
 </body>
+
 </html>

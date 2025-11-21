@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - NutriAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        h1, h2, h3, .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Abstract wave animation */
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        /* Glass card effect */
+        .glass-card {
+            background: rgba(30, 37, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* BUG FIX: Force Autofill to be Dark */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1f261f inset !important;
+            -webkit-text-fill-color: #E2E8F0 !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nutri: {
+                            dark: '#141814',   
+                            card: '#1E251E',   
+                            highlight: '#D9F99D', // Lime-200
+                            lime: '#84CC16',      // Lime-500
+                            text: '#E2E8F0',   
+                            muted: '#94A3B8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<!-- BUG FIX: Removed 'overflow-hidden' from body so mobile users can scroll -->
+<body class="bg-nutri-dark text-nutri-text min-h-screen flex items-center justify-center p-4 sm:p-6 relative">
+
+    <!-- Background Pattern (Fixed Position) -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div class="wave-bg">
+            <svg viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg" class="w-full h-full preserve-3d object-cover">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                        <stop offset="50%" style="stop-color:#D9F99D;stop-opacity:0.1" />
+                        <stop offset="100%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,200 C300,150 600,250 900,200 C1200,150 1440,250 1440,200 L1440,800 L0,800 Z" fill="url(#grad1)" />
+            </svg>
+        </div>
+        <!-- Ambient Glow -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-lime-500/10 rounded-full blur-[128px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-lime-500/5 rounded-full blur-[128px]"></div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="glass-card rounded-3xl p-8 md:p-10 max-w-md w-full relative z-10 my-8">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 border border-white/10 mb-4 shadow-inner ring-1 ring-white/10">
+                <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-nutri-highlight">
+                    <path d="M10 30L15 10L25 30L30 10" stroke="#D9F99D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8 15C8 15 12 20 20 20C28 20 32 15 32 15" stroke="#D9F99D" stroke-width="2" stroke-opacity="0.5"/>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2 font-serif tracking-tight">Create Account</h1>
+            <p class="text-nutri-muted text-sm">Join NutriAI to start your healthy journey</p>
+        </div>
+        
+        <!-- Django Messages -->
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+            {% for message in messages %}
+                <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5 text-red-400"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Form -->
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+            
+            <!-- Username -->
+            <div>
+                <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-2 ml-1">Username</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-nutri-muted group-focus-within:text-nutri-highlight transition-colors">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <input type="text" name="username" required 
+                           class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-nutri-highlight/50 focus:ring-1 focus:ring-nutri-highlight/50 focus:bg-white/10 transition-all"
+                           placeholder="Choose a username">
+                </div>
+            </div>
+            
+            <!-- Email -->
+            <div>
+                <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-2 ml-1">Email</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-nutri-muted group-focus-within:text-nutri-highlight transition-colors">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </div>
+                    <input type="email" name="email" required 
+                           class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-nutri-highlight/50 focus:ring-1 focus:ring-nutri-highlight/50 focus:bg-white/10 transition-all"
+                           placeholder="you@example.com">
+                </div>
+            </div>
+            
+            <!-- Password -->
+            <div>
+                <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-2 ml-1">Password</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-nutri-muted group-focus-within:text-nutri-highlight transition-colors">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                    </div>
+                    <input type="password" name="password" required 
+                           class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-nutri-highlight/50 focus:ring-1 focus:ring-nutri-highlight/50 focus:bg-white/10 transition-all"
+                           placeholder="••••••••">
+                </div>
+            </div>
+            
+            <!-- Confirm Password -->
+            <div>
+                <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-2 ml-1">Confirm Password</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-nutri-muted group-focus-within:text-nutri-highlight transition-colors">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    </div>
+                    <input type="password" name="password2" required 
+                           class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/20 focus:outline-none focus:border-nutri-highlight/50 focus:ring-1 focus:ring-nutri-highlight/50 focus:bg-white/10 transition-all"
+                           placeholder="••••••••">
+                </div>
+            </div>
+            
+            <button type="submit" 
+                    class="w-full flex items-center justify-center gap-2 bg-nutri-highlight text-nutri-dark font-serif font-bold text-lg py-3 rounded-xl hover:bg-lime-300 transform hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(217,249,157,0.3)] mt-4">
+                Create Account <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </button>
+        </form>
+        
+        <div class="mt-8 pt-6 border-t border-white/10 text-center">
+            <p class="text-nutri-muted text-sm">
+                Already have an account? 
+                <a href="{% url 'login' %}" class="text-nutri-highlight hover:text-lime-300 font-semibold hover:underline transition-colors ml-1">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
