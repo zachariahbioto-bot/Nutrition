@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Recipe - NutriAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nutri: {
+                            dark: '#141814',   
+                            card: '#1E251E',   
+                            accent: '#2A352A', 
+                            highlight: '#D9F99D',
+                            text: '#E2E8F0',   
+                            muted: '#94A3B8',  
+                            hover: '#2F3B2F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-nutri-dark text-nutri-text min-h-screen">
+    
+    <div class="max-w-6xl mx-auto p-6">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-serif font-bold text-white mb-2">Choose Your Recipe</h1>
+            <p class="text-nutri-muted">AI generated {{ recipes|length }} recipe options for you</p>
+        </div>
+
+        <!-- Recipe Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            {% for recipe in recipes %}
+            <div class="glass-card rounded-3xl p-6 hover:scale-105 transition-all cursor-pointer" onclick="selectRecipe({{ forloop.counter0 }})">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-2xl font-bold text-white">{{ recipe.name }}</h3>
+                    <i data-lucide="chef-hat" class="w-6 h-6 text-purple-400"></i>
+                </div>
+
+                <!-- Nutrition Info -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="text-center p-3 bg-white/5 rounded-xl">
+                        <p class="text-xl font-bold text-lime-400">{{ recipe.calories|floatformat:0 }}</p>
+                        <p class="text-xs text-nutri-muted">Calories</p>
+                    </div>
+                    <div class="text-center p-3 bg-white/5 rounded-xl">
+                        <p class="text-xl font-bold text-blue-400">{{ recipe.protein_g|floatformat:0 }}g</p>
+                        <p class="text-xs text-nutri-muted">Protein</p>
+                    </div>
+                    <div class="text-center p-3 bg-white/5 rounded-xl">
+                        <p class="text-xl font-bold text-yellow-400">{{ recipe.carbs_g|floatformat:0 }}g</p>
+                        <p class="text-xs text-nutri-muted">Carbs</p>
+                    </div>
+                    <div class="text-center p-3 bg-white/5 rounded-xl">
+                        <p class="text-xl font-bold text-purple-400">{{ recipe.fats_g|floatformat:0 }}g</p>
+                        <p class="text-xs text-nutri-muted">Fats</p>
+                    </div>
+                </div>
+
+                <!-- Time Info -->
+                <div class="flex items-center gap-4 text-sm text-nutri-muted mb-4">
+                    <span class="flex items-center gap-1">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        {{ recipe.prep_time }}min prep
+                    </span>
+                    <span class="flex items-center gap-1">
+                        <i data-lucide="flame" class="w-4 h-4"></i>
+                        {{ recipe.cook_time }}min cook
+                    </span>
+                </div>
+
+                <!-- Instructions Preview -->
+                <div class="mb-4">
+                    <p class="text-sm text-nutri-muted line-clamp-3">{{ recipe.instructions|slice:":150" }}...</p>
+                </div>
+
+                <button type="button" onclick="selectRecipe({{ forloop.counter0 }})" 
+                        class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all">
+                    Choose This Recipe
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center">
+            <a href="{% url 'generate_recipe' %}" class="inline-flex items-center gap-2 text-nutri-muted hover:text-white transition-colors">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                Generate Different Recipes
+            </a>
+        </div>
+    </div>
+
+    <!-- Hidden Form for Submission -->
+    <form id="selectForm" method="POST" class="hidden">
+        {% csrf_token %}
+        <input type="hidden" name="recipe_index" id="recipeIndex">
+        <input type="hidden" name="meal_type" value="lunch">
+        <input type="checkbox" name="log_now" checked>
+    </form>
+
+    <script>
+        lucide.createIcons();
+
+        function selectRecipe(index) {
+            document.getElementById('recipeIndex').value = index;
+            document.getElementById('selectForm').submit();
+        }
+    </script>
+</body>
+</html>

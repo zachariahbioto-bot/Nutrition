@@ -27,26 +27,25 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG',default=False,cast=bool)
 
 # Find ALLOWED_HOSTS and update:
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.app.github.dev',
-    'opulent-rotary-phone-974jq7vr9vrwfgp5-8000.app.github.dev',
-]
+ALLOWED_HOSTS = ['*']
+    
 
 # Add these lines (after ALLOWED_HOSTS):
 CSRF_TRUSTED_ORIGINS =  [
-    'https://opulent-rotary-phone-974jq7vr9vrwfgp5-8000.app.github.dev',
     'https://*.app.github.dev',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
+    'https://*.githubpreview.dev',
+    'https://*.preview.app.github.dev',
+    
 ]
 
 # Add these for development:
-CSRF_COOKIE_DOMAIN = None
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'
 
+# For development only - REMOVE in production
+CSRF_COOKIE_HTTPONLY = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -177,3 +176,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
+# USDA API Key
+USDA_API_KEY = config('USDA_API_KEY', default='')
+# Unsplash API
+UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY', default='')

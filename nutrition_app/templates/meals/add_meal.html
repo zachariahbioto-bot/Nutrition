@@ -1,0 +1,285 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Meal - NutriAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Favicon Link -->
+    <link rel="icon" type="image/jpeg" href="{% static 'images/favicon.jpg' %}">
+    
+    <style>
+        /* Dashboard CSS */
+        .glass-card {
+            background: rgba(30, 37, 30, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .wave-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+        }
+        
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1E241E; }
+        ::-webkit-scrollbar-thumb { background: #354135; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4d5f4d; }
+
+        /* Fix for select dropdown arrow color in dark mode */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D9F99D' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            appearance: none;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nutri: {
+                            dark: '#141814',   
+                            card: '#1E251E',   
+                            accent: '#2A352A', 
+                            highlight: '#D9F99D',
+                            lime: '#84CC16',
+                            text: '#E2E8F0',   
+                            muted: '#94A3B8',  
+                            hover: '#2F3B2F'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-nutri-dark text-nutri-text min-h-screen relative overflow-x-hidden">
+
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="wave-bg">
+            <svg viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg" class="w-full h-full preserve-3d object-cover">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                        <stop offset="50%" style="stop-color:#D9F99D;stop-opacity:0.1" />
+                        <stop offset="100%" style="stop-color:#D9F99D;stop-opacity:0.05" />
+                    </linearGradient>
+                </defs>
+                <path d="M0,200 C300,150 600,250 900,200 C1200,150 1440,250 1440,200 L1440,800 L0,800 Z" fill="url(#grad1)" />
+            </svg>
+        </div>
+    </div>
+    
+    <div class="relative z-10 max-w-4xl mx-auto p-6">
+        <!-- Back Button -->
+        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 text-nutri-muted hover:text-nutri-highlight mb-6 transition-colors group">
+            <div class="p-1 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </div>
+            <span>Back to Dashboard</span>
+        </a>
+
+        <!-- Main Card -->
+        <div class="glass-card rounded-3xl p-8 animate-[fadeIn_0.5s_ease-out]">
+            
+            <!-- LOGO INSERTION HERE -->
+            <div class="flex justify-center mb-6">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 shadow-2xl overflow-hidden p-1 ring-1 ring-white/5">
+                    <img src="{% static 'images/favicon.jpg' %}" alt="NutriAI Logo" class="w-full h-full object-cover rounded-xl">
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-serif font-bold text-white mb-2">Log Your Meal</h1>
+                <p class="text-nutri-muted">Track what you eat to reach your goals</p>
+            </div>
+
+            {% if messages %}
+                <div class="space-y-2 mb-6">
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'error' %}bg-red-500/10 border border-red-500/20 text-red-300{% else %}bg-lime-500/10 border border-lime-500/20 text-lime-300{% endif %}">
+                        <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle-2{% endif %}" class="w-5 h-5"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="space-y-8">
+                {% csrf_token %}
+
+                <!-- Meal Type -->
+                <div>
+                    <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-3 ml-1">Meal Type</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label class="relative group">
+                            <input type="radio" name="meal_type" value="breakfast" {% if suggested_meal == 'breakfast' %}checked{% endif %} class="peer hidden">
+                            <div class="glass-card p-4 rounded-xl cursor-pointer text-center border-2 border-transparent peer-checked:border-lime-500 peer-checked:bg-lime-500/10 hover:bg-white/5 transition-all h-full flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="sunrise" class="w-6 h-6 text-yellow-400"></i>
+                                <p class="text-sm font-semibold text-white">Breakfast</p>
+                            </div>
+                        </label>
+                        <label class="relative group">
+                            <input type="radio" name="meal_type" value="lunch" {% if suggested_meal == 'lunch' %}checked{% endif %} class="peer hidden">
+                            <div class="glass-card p-4 rounded-xl cursor-pointer text-center border-2 border-transparent peer-checked:border-lime-500 peer-checked:bg-lime-500/10 hover:bg-white/5 transition-all h-full flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="sun" class="w-6 h-6 text-orange-400"></i>
+                                <p class="text-sm font-semibold text-white">Lunch</p>
+                            </div>
+                        </label>
+                        <label class="relative group">
+                            <input type="radio" name="meal_type" value="dinner" {% if suggested_meal == 'dinner' %}checked{% endif %} class="peer hidden">
+                            <div class="glass-card p-4 rounded-xl cursor-pointer text-center border-2 border-transparent peer-checked:border-lime-500 peer-checked:bg-lime-500/10 hover:bg-white/5 transition-all h-full flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="moon" class="w-6 h-6 text-blue-400"></i>
+                                <p class="text-sm font-semibold text-white">Dinner</p>
+                            </div>
+                        </label>
+                        <label class="relative group">
+                            <input type="radio" name="meal_type" value="snack" {% if suggested_meal == 'snack' %}checked{% endif %} class="peer hidden">
+                            <div class="glass-card p-4 rounded-xl cursor-pointer text-center border-2 border-transparent peer-checked:border-lime-500 peer-checked:bg-lime-500/10 hover:bg-white/5 transition-all h-full flex flex-col items-center justify-center gap-2">
+                                <i data-lucide="cookie" class="w-6 h-6 text-purple-400"></i>
+                                <p class="text-sm font-semibold text-white">Snack</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Food Selection -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-3 ml-1">Select Food</label>
+                        <div class="relative">
+                            <select name="food_id" id="foodSelect" required 
+                                    class="w-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-10 py-3 text-white focus:ring-1 focus:ring-nutri-highlight focus:border-nutri-highlight focus:outline-none transition-all">
+                                <option value="" class="bg-nutri-dark text-gray-400">Choose a food...</option>
+                                {% for food in foods %}
+                                    <option value="{{ food.id }}" 
+                                            class="bg-nutri-card text-white"
+                                            data-calories="{{ food.calories }}"
+                                            data-protein="{{ food.protein_g }}"
+                                            data-carbs="{{ food.carbs_g }}"
+                                            data-fats="{{ food.fats_g }}">
+                                        {{ food.name }} ({{ food.serving_size }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <p class="text-xs text-nutri-muted mt-2 ml-1">
+                            Don't see your food?
+                            <a href="{% url 'search_foods' %}" class="text-nutri-highlight hover:text-lime-300 hover:underline transition-colors">Search Database</a>
+                        </p>
+                    </div>
+
+                    <!-- Amount -->
+                    <div>
+                        <label class="block text-nutri-muted text-xs font-bold uppercase tracking-wider mb-3 ml-1">Amount (g)</label>
+                        <div class="relative">
+                            <input type="number" name="amount" id="amountInput" value="100" min="1" step="1" required
+                                   class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-1 focus:ring-nutri-highlight focus:border-nutri-highlight focus:outline-none transition-all">
+                            <span class="absolute right-4 top-3.5 text-nutri-muted text-sm pointer-events-none">g</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nutrition Preview -->
+                <div id="nutritionPreview" class="bg-white/5 border border-white/5 rounded-2xl p-6 hidden transition-all">
+                    <h3 class="text-sm font-bold text-white mb-4 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="activity" class="w-4 h-4 text-nutri-highlight"></i> Nutrition Preview
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="p-3 rounded-xl bg-lime-500/10 border border-lime-500/20">
+                            <p class="text-2xl font-bold text-lime-400" id="previewCalories">0</p>
+                            <p class="text-xs text-nutri-muted font-medium">Calories</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                            <p class="text-2xl font-bold text-blue-400" id="previewProtein">0g</p>
+                            <p class="text-xs text-nutri-muted font-medium">Protein</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+                            <p class="text-2xl font-bold text-yellow-400" id="previewCarbs">0g</p>
+                            <p class="text-xs text-nutri-muted font-medium">Carbs</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                            <p class="text-2xl font-bold text-purple-400" id="previewFats">0g</p>
+                            <p class="text-xs text-nutri-muted font-medium">Fats</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex flex-col-reverse sm:flex-row gap-4 pt-4">
+                    <a href="{% url 'dashboard' %}" 
+                       class="sm:w-1/3 px-6 py-3.5 bg-white/5 text-nutri-muted font-semibold rounded-xl hover:bg-white/10 hover:text-white transition-all border border-white/10 text-center">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="sm:w-2/3 bg-nutri-highlight text-nutri-dark font-bold py-3.5 rounded-xl hover:bg-lime-300 transition-all shadow-[0_0_20px_rgba(217,249,157,0.2)] hover:shadow-[0_0_25px_rgba(217,249,157,0.4)] flex items-center justify-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i> Log Meal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Nutrition preview calculator
+        const foodSelect = document.getElementById('foodSelect');
+        const amountInput = document.getElementById('amountInput');
+        const preview = document.getElementById('nutritionPreview');
+
+        function updatePreview() {
+            const selectedOption = foodSelect.options[foodSelect.selectedIndex];
+            // Default to 100 if empty to avoid NaN during typing
+            const amount = parseFloat(amountInput.value); 
+
+            if (selectedOption.value && !isNaN(amount)) {
+                const multiplier = amount / 100;
+                
+                const calories = parseFloat(selectedOption.dataset.calories) * multiplier;
+                const protein = parseFloat(selectedOption.dataset.protein) * multiplier;
+                const carbs = parseFloat(selectedOption.dataset.carbs) * multiplier;
+                const fats = parseFloat(selectedOption.dataset.fats) * multiplier;
+
+                document.getElementById('previewCalories').textContent = Math.round(calories);
+                document.getElementById('previewProtein').textContent = Math.round(protein) + 'g';
+                document.getElementById('previewCarbs').textContent = Math.round(carbs) + 'g';
+                document.getElementById('previewFats').textContent = Math.round(fats) + 'g';
+
+                preview.classList.remove('hidden');
+                // Fade in effect
+                preview.style.opacity = '0';
+                setTimeout(() => preview.style.opacity = '1', 50);
+            } else {
+                preview.classList.add('hidden');
+            }
+        }
+
+        foodSelect.addEventListener('change', updatePreview);
+        amountInput.addEventListener('input', updatePreview);
+    </script>
+</body>
+</html>

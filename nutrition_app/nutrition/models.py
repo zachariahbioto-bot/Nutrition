@@ -103,6 +103,8 @@ class Food(models.Model):
     
     # Meta
     category = models.CharField(max_length=50, blank=True)
+    # Image URL for display (migration 0002 adds this to the DB)
+    image_url = models.URLField(max_length=500, null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     
