@@ -1,0 +1,1 @@
+web: gunicorn nutrition_project.wsgi:application
