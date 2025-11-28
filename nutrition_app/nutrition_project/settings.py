@@ -1,4 +1,4 @@
-/workspaces/Nutrition/.venv/bin/python -m pip install -r nutrition_app/requirements.txt && cd nutrition_app && python manage.py migrate
+
 """
 Django settings for nutrition_project project.
 
