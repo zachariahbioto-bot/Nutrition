@@ -1,0 +1,51 @@
+/* NutriAI Dashboard Styles */
+
+/* Typography */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+h1, h2, h3, h4, .font-serif {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1E241E; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: #354135; 
+    border-radius: 4px;
+}
+
+/* Abstract wave animation/positioning */
+.wave-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+/* Glass card effect */
+.glass-card {
+    background: rgba(30, 37, 30, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    background: rgba(30, 37, 30, 0.8);
+    border-color: rgba(217, 249, 157, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+}
